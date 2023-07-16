@@ -2,7 +2,6 @@
 #include <algorithm>
 #include <cassert>
 #include <vector>
-#include <ctime>
 
 #if defined(NCNN_YOLOX_FLUTTER_IOS)
 #include "ncnn/ncnn/net.h"
@@ -384,36 +383,6 @@ char *parseResultsObjects(std::vector<TargetBox> boxes)
     return result_c;
 }
 
-// extern "C" __attribute__((visibility("default"))) __attribute__((used)) char *detectWithImagePath(char *imagepath, double nms_thresh, double conf_thresh, int target_size)
-// {
-//     // Load image using OpenCV
-//     cv::Mat m = cv::imread(imagepath, cv::IMREAD_COLOR);
-
-//     // Exit if the image does not load.
-//     if (m.empty())
-//     {
-//         NCNN_LOGE("cv::imread %s failed", imagepath);
-//         return (char *)"";
-//     }
-
-//     std::vector<TargetBox> objects;
-//     yoloFastestv2 yolo;
-
-//     // Measure execution time
-//     auto start_time = std::chrono::steady_clock::now();
-
-//     yolo.detection(m, objects, (float)conf_thresh);
-
-//     auto end_time = std::chrono::steady_clock::now();
-//     auto duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
-
-//     NCNN_LOGE("Processing time: %ld milliseconds", duration_ms);
-
-//     // drawBoxes(m, objects, objects2);
-
-//     return parseResultsObjects(objects);
-// }
-
 extern "C" __attribute__((visibility("default"))) __attribute__((used)) char *detectWithImagePath(char *imagepath, double nms_thresh, double conf_thresh, int target_size)
 {
     // Load image using OpenCV
@@ -430,14 +399,14 @@ extern "C" __attribute__((visibility("default"))) __attribute__((used)) char *de
     yoloFastestv2 yolo;
 
     // Measure execution time
-    clock_t start_time = clock();
+    auto start_time = std::chrono::steady_clock::now();
 
     yolo.detection(m, objects, (float)conf_thresh);
 
-    clock_t end_time = clock();
-    double duration_ms = double(end_time - start_time) / (CLOCKS_PER_SEC / 1000.0);
+    auto end_time = std::chrono::steady_clock::now();
+    auto duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
 
-    NCNN_LOGE("Processing time: %f milliseconds", duration_ms);
+    NCNN_LOGE("Processing time: %ld milliseconds", duration_ms);
 
     // drawBoxes(m, objects, objects2);
 
@@ -471,17 +440,12 @@ extern "C" __attribute__((visibility("default"))) __attribute__((used)) char *de
     cv::Mat cvImage(w, h, CV_8UC3, image.data);
 
     // Measure execution time
-    clock_t start_time = clock();
-    // auto start_time = std::chrono::steady_clock::now();
+    auto start_time = std::chrono::steady_clock::now();
 
     yolo.detection(cvImage, objects, (float)conf_thresh);
 
-    // auto end_time = std::chrono::steady_clock::now();
-    // auto duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
-
-    clock_t end_time = clock();
-    double duration_ms = double(end_time - start_time) / (CLOCKS_PER_SEC / 1000.0);
-
+    auto end_time = std::chrono::steady_clock::now();
+    auto duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
     NCNN_LOGE("Processing time: %ld milliseconds", duration_ms);
 
     NCNN_LOGE("masuk sini");
