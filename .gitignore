@@ -30,3 +30,6 @@ build/
 ios/ncnn.xcframework
 ios/openmp.xcframework
 android/ncnn
+
+# VS Code
+.vscode
