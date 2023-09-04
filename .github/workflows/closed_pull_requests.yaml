@@ -25,7 +25,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       ### Setup ###
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Gradle Cache
         if: ${{ runner.os == 'linux' }}
